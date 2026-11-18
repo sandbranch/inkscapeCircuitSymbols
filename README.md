@@ -1,3 +1,8 @@
+> **This fork (branch `inkscape-1.4`)** draws symbols the same real size in any document (in Inkscape 1.x's default A4, in mm, they came out 3.78 times too large). Needs the matching
+> [inkscapeMadeEasy fork](https://github.com/sandbranch/inkscapeMadeEasy)
+> (branch `inkscape-1.4`), which also makes TexText optional. Tests:
+> `python3 -m pytest tests/` with that fork checked out next to this one.
+
 # circuitSymbols
 
 This extension will assist you creating electric symbols in [Inkscape](https://inkscape.org/).

@@ -1,0 +1,25 @@
+name: tests
+on: [push, pull_request]
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.10", "3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      # the fixed inkscapeMadeEasy this branch needs
+      - uses: actions/checkout@v4
+        with:
+          repository: sandbranch/inkscapeMadeEasy
+          ref: inkscape-1.4
+          path: madeeasy
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      # inkex without PyGObject, which only its GUI helpers need
+      - run: pip install --no-deps inkex==1.4.0
+      - run: pip install "lxml>=4.5,<7" numpy pytest tinycss2 cssselect pyparsing packaging
+      - run: python -m pytest -q tests/
+        env:
+          INKSCAPE_MADEEASY: ${{ github.workspace }}/madeeasy/latest
