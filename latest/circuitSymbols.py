@@ -3,6 +3,7 @@
 import math
 import os
 
+import inkex
 import inkscapeMadeEasy.inkscapeMadeEasy_Base as inkBase
 import inkscapeMadeEasy.inkscapeMadeEasy_Draw as inkDraw
 from drawAmpOp import ampOp
@@ -237,6 +238,18 @@ class CircuitSymbols(RLC, source, transistor, transformer, signal, arrow, ampOp,
         self.arg_parser.add_argument("--colorPickerVolt", type=str, dest="colorPickerVolt", default='0')
 
     def effect(self):
+        # the drawing code uses sizes in px; scale what it draws to the
+        # document's user units (3.78 times smaller in a document in mm),
+        # about the point it was placed at
+        root = self.document.getroot()
+        before = set(root)
+        self.drawEffect()
+        position = [self.svg.namedview.center[0], self.svg.namedview.center[1]]
+        position = [int(math.ceil(position[0] / 10.0)) * 10, int(math.ceil(position[1] / 10.0)) * 10]
+        skip = (inkex.addNS('defs', 'svg'), inkex.addNS('namedview', 'sodipodi'), inkex.addNS('metadata', 'svg'))
+        self.drawnInPx([e for e in root if e not in before and e.tag not in skip], position)
+
+    def drawEffect(self):
 
         so = self.options
         so.tab = so.tab.replace('"', '')  # removes de exceeding double quotes from the string
